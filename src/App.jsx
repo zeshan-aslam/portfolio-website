@@ -1,386 +1,312 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Code, Server, Database, ShieldCheck, Star, ExternalLink, 
-  CheckCircle, Terminal, Layers, Monitor, ChevronRight, 
-  MessageSquare, ChevronLeft, ArrowRight, Sparkles
-} from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import {
+  ArrowUpRight, ArrowRight, Code2, CreditCard, Database, Globe2,
+  Layers3, Menu, X, Server, ShieldCheck, Star, ChevronLeft,
+  ChevronRight, CheckCircle2, Mail, ExternalLink, Terminal,
+  Workflow, Smartphone, Zap
+} from "lucide-react";
+import "./App.css";
 
-const SKILLS = [
-  { name: 'React / Next.js', category: 'Frontend', icon: Code, desc: 'SPAs, SSR & Custom Components' },
-  { name: 'Tailwind CSS / Bootstrap', category: 'Frontend', icon: Monitor, desc: 'Responsive UI & Animations' },
-  { name: 'JavaScript (ES6+) / Vue.js', category: 'Frontend', icon: Code, desc: 'Modern JS Architectures' },
-  { name: 'PHP / Laravel / WordPress', category: 'Backend', icon: Server, desc: 'REST APIs & Custom Scripts' },
-  { name: 'Node.js / Express', category: 'Backend', icon: Server, desc: 'Scalable Microservices' },
-  { name: 'Python (Tkinter, FastAPI)', category: 'Backend', icon: Terminal, desc: 'Desktop Apps & Automation' },
-  { name: 'Stripe & Stripe Connect', category: 'Payments', icon: ShieldCheck, desc: 'Marketplaces & Webhooks' },
-  { name: 'PayPal & Payoneer API', category: 'Payments', icon: ShieldCheck, desc: 'Global Payment Gateways' },
-  { name: 'Docker & Nginx', category: 'DevOps', icon: Layers, desc: 'Containerization & Proxies' },
-  { name: 'MySQL / MongoDB / SQLite', category: 'Database', icon: Database, desc: 'Relational & NoSQL Storage' },
+const FIVERR_URL = "https://www.fiverr.com/users/zeshanaslam385";
+
+const skills = [
+  { name: "React & Next.js", group: "Frontend", detail: "Modern interfaces, dashboards and web apps", icon: Code2 },
+  { name: "JavaScript", group: "Frontend", detail: "Interactive, maintainable browser experiences", icon: Zap },
+  { name: "Tailwind CSS & Bootstrap", group: "Frontend", detail: "Responsive layouts and polished UI", icon: Smartphone },
+  { name: "PHP & Laravel", group: "Backend", detail: "Custom backends, APIs and integrations", icon: Server },
+  { name: "Node.js & Express", group: "Backend", detail: "API development and server-side logic", icon: Terminal },
+  { name: "Stripe & Stripe Connect", group: "Payments", detail: "Checkout, subscriptions, webhooks and payouts", icon: CreditCard },
+  { name: "PayPal APIs", group: "Payments", detail: "Payment flows and transaction automation", icon: ShieldCheck },
+  { name: "MySQL & MongoDB", group: "Database", detail: "Data modeling and application storage", icon: Database },
+  { name: "Docker & Nginx", group: "DevOps", detail: "Deployment environments and reverse proxies", icon: Layers3 },
 ];
 
-const PROJECTS = [
+const projects = [
   {
-    id: 1,
-    title: "Multi-Vendor Restaurant Stripe Connect Platform",
-    category: "Payment Gateway",
+    number: "01",
+    title: "Multi-Vendor Restaurant Platform",
+    category: "Payments · Marketplace",
+    description: "A restaurant marketplace payment flow with Stripe Connect onboarding, platform fee deductions and vendor payouts.",
     tags: ["PHP", "Stripe Connect", "JavaScript", "MySQL"],
-    description: "Automated split payment processing for restaurant vendors with automated onboarding, custom platform fee deductions, and direct payouts.",
+    icon: CreditCard,
+    accent: "violet",
   },
   {
-    id: 2,
+    number: "02",
     title: "International School Member Portal",
-    category: "Full Stack",
+    category: "Full-stack · Dashboard",
+    description: "A member and administration portal with profile management, role-based access and connected data workflows.",
     tags: ["React", "Tailwind CSS", "Node.js", "Express"],
-    description: "Interactive dashboard featuring client management, member profile controls, role-based access, and automated data syncing.",
+    icon: Globe2,
+    accent: "blue",
   },
   {
-    id: 3,
-    title: "Python POS Desktop Billing System",
-    category: "Desktop App",
+    number: "03",
+    title: "Python POS & Billing System",
+    category: "Desktop · Automation",
+    description: "A desktop billing application with thermal receipt support, SQLite storage, inventory lookup and quick transaction handling.",
     tags: ["Python", "Tkinter", "SQLite", "PyInstaller"],
-    description: "Custom thermal receipt billing desktop app with SQLite database, inventory lookup, and fast transaction handling.",
-  }
+    icon: Terminal,
+    accent: "mint",
+  },
 ];
 
-const REVIEWS_DATA = [
+const reviews = [
   {
-    id: 1,
-    client: "Asifovi",
-    country: "Germany",
-    flag: "🇩🇪",
-    rating: 5,
-    date: "Dec 2025",
-    gigTitle: "Stripe Connect Integration for Restaurant Platform",
-    category: "Stripe & Payments",
-    review: "Zeeshan is an exceptional software engineer! He integrated Stripe Connect seamlessly into our ordering platform. Fast communication, clean code, and great attention to detail.",
+    client: "Asifovi", country: "Germany", flag: "🇩🇪", date: "Dec 2025",
+    project: "Stripe Connect Integration for Restaurant Platform",
+    text: "Zeeshan is an exceptional software engineer! He integrated Stripe Connect seamlessly into our ordering platform. Fast communication, clean code, and great attention to detail."
   },
   {
-    id: 2,
-    client: "Lee",
-    country: "United States",
-    flag: "🇺🇸",
-    rating: 5,
-    date: "May 2026",
-    gigTitle: "Member Portal & Admin Dashboard Development",
-    category: "React / Frontend",
-    review: "Delivered top-quality React code on schedule. Extremely helpful with setting up clean component structures and responsiveness. Will hire again!",
+    client: "Lee", country: "United States", flag: "🇺🇸", date: "May 2026",
+    project: "Member Portal & Admin Dashboard Development",
+    text: "Delivered top-quality React code on schedule. Extremely helpful with setting up clean component structures and responsiveness. Will hire again!"
   },
   {
-    id: 3,
-    client: "Patrick",
-    country: "Netherlands",
-    flag: "🇳🇱",
-    rating: 5,
-    date: "Oct 2026",
-    gigTitle: "EU VAT & Stripe Tax Webhook Integration",
-    category: "Stripe & Payments",
-    review: "Handled complex EU VAT rules and reverse charge calculations effortlessly via Stripe Tax webhooks. Very knowledgeable backend developer.",
+    client: "Patrick", country: "Netherlands", flag: "🇳🇱", date: "Oct 2026",
+    project: "EU VAT & Stripe Tax Webhook Integration",
+    text: "Handled complex EU VAT rules and reverse charge calculations effortlessly via Stripe Tax webhooks. Very knowledgeable backend developer."
   },
   {
-    id: 4,
-    client: "Deborah M.",
-    country: "United Kingdom",
-    flag: "🇬🇧",
-    rating: 5,
-    date: "Sep 2026",
-    gigTitle: "WordPress Payment Account Migration",
-    category: "Backend & APIs",
-    review: "Smooth execution on short notice! Fixed payment migration bugs quickly without breaking existing WooCommerce flow.",
-  }
+    client: "Deborah M.", country: "United Kingdom", flag: "🇬🇧", date: "Sep 2026",
+    project: "WordPress Payment Account Migration",
+    text: "Smooth execution on short notice! Fixed payment migration bugs quickly without breaking existing WooCommerce flow."
+  },
+];
+
+const services = [
+  { title: "Payment integrations", text: "Stripe, Stripe Connect, PayPal, checkout flows, subscriptions and webhooks.", icon: CreditCard },
+  { title: "Full-stack development", text: "Custom React interfaces, PHP/Laravel backends and Node.js APIs.", icon: Workflow },
+  { title: "Existing project fixes", text: "Debugging, payment-flow improvements, API fixes and ongoing maintenance.", icon: ShieldCheck },
 ];
 
 export default function App() {
-  const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [reviewIndex, setReviewIndex] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  // Auto Slider Effect
+  const changeReview = (direction) => {
+    setReviewIndex((current) => (current + direction + reviews.length) % reviews.length);
+  };
+
   useEffect(() => {
-    if (!isAutoPlaying) return;
-    const interval = setInterval(() => {
-      setCurrentReviewIndex((prev) => (prev + 1) % REVIEWS_DATA.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [isAutoPlaying]);
+    const onResize = () => {
+      if (window.innerWidth > 760) setMenuOpen(false);
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
-  const nextReview = () => {
-    setIsAutoPlaying(false);
-    setCurrentReviewIndex((prev) => (prev + 1) % REVIEWS_DATA.length);
-  };
-
-  const prevReview = () => {
-    setIsAutoPlaying(false);
-    setCurrentReviewIndex((prev) => (prev - 1 + REVIEWS_DATA.length) % REVIEWS_DATA.length);
-  };
+  const closeMenu = () => setMenuOpen(false);
+  const activeReview = reviews[reviewIndex];
 
   return (
-    <div style={{ backgroundColor: '#030712', color: '#f3f4f6', minHeight: '100vh', width: '100%', fontFamily: 'system-ui, -apple-system, sans-serif', overflowX: 'hidden' }}>
-      
-      {/* Dynamic Background Glow Effects */}
-      <div style={{ position: 'fixed', top: '-10%', left: '20%', width: '500px', height: '500px', backgroundColor: 'rgba(99, 102, 241, 0.12)', filter: 'blur(120px)', borderRadius: '50%', pointerEvents: 'none' }}></div>
-      <div style={{ position: 'fixed', bottom: '10%', right: '10%', width: '450px', height: '450px', backgroundColor: 'rgba(16, 185, 129, 0.08)', filter: 'blur(120px)', borderRadius: '50%', pointerEvents: 'none' }}></div>
+    <div className="portfolio-shell">
+      <div className="ambient ambient-one" aria-hidden="true" />
+      <div className="ambient ambient-two" aria-hidden="true" />
 
-      {/* Glassmorphism Navbar */}
-      <nav style={{ position: 'sticky', top: 0, zIndex: 50, backgroundColor: 'rgba(3, 7, 18, 0.85)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
-        <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '0 1.5rem', height: '70px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-            <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1.3rem', boxShadow: '0 4px 14px rgba(99, 102, 241, 0.35)' }}>
-              Z
-            </div>
-            <div>
-              <span style={{ fontWeight: 800, fontSize: '1.1rem', color: '#ffffff', display: 'block', letterSpacing: '-0.02em' }}>Zeeshan Aslam</span>
-              <span style={{ fontSize: '0.75rem', color: '#818cf8', fontFamily: 'monospace' }}>@zeshanaslam385</span>
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', gap: '2rem', fontSize: '0.9rem', fontWeight: 500, color: '#9ca3af' }}>
-            <a href="#about" style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }}>About</a>
-            <a href="#skills" style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }}>Tech Stack</a>
-            <a href="#reviews" style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }}>Reviews Slider</a>
-            <a href="#projects" style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }}>Projects</a>
-          </div>
-
-          <a 
-            href="https://www.fiverr.com/users/zeshanaslam385" 
-            target="_blank" 
-            rel="noreferrer"
-            style={{ padding: '0.6rem 1.25rem', borderRadius: '10px', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color: '#ffffff', fontWeight: 600, fontSize: '0.85rem', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: '0 4px 14px rgba(16, 185, 129, 0.3)' }}
-          >
-            <span>Fiverr Profile</span>
-            <ExternalLink size={14} />
+      <header className="site-header">
+        <nav className="nav container" aria-label="Main navigation">
+          <a className="brand" href="#home" onClick={closeMenu} aria-label="Zeeshan Aslam home">
+            <span className="brand-mark">Z<span>.</span></span>
+            <span className="brand-copy">
+              <strong>Zeeshan Aslam</strong>
+              <small>Full-stack developer</small>
+            </span>
           </a>
-        </div>
-      </nav>
 
-      {/* Hero Section */}
-      <section id="about" style={{ padding: '6rem 1.5rem 5rem 1.5rem', maxWidth: '1240px', margin: '0 auto', position: 'relative' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3rem', alignItems: 'center' }}>
-          
-          <div>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', padding: '0.4rem 1rem', borderRadius: '9999px', backgroundColor: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.3)', color: '#34d399', fontSize: '0.8rem', fontFamily: 'monospace', marginBottom: '1.5rem' }}>
-              <Sparkles size={14} />
-              <span>Available for Fiverr Orders & Full-Stack Contracts</span>
-            </div>
+          <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle navigation" aria-expanded={menuOpen}>
+            {menuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
 
-            <h1 style={{ fontSize: '3.2rem', fontWeight: 900, lineHeight: 1.1, color: '#ffffff', marginBottom: '1.5rem', letterSpacing: '-0.03em' }}>
-              Full-Stack Software Engineer & <span style={{ background: 'linear-gradient(135deg, #818cf8 0%, #c084fc 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Payment Specialist</span>
-            </h1>
+          <div className={`nav-links ${menuOpen ? "nav-links-open" : ""}`}>
+            <a href="#about" onClick={closeMenu}>About</a>
+            <a href="#services" onClick={closeMenu}>Services</a>
+            <a href="#skills" onClick={closeMenu}>Expertise</a>
+            <a href="#projects" onClick={closeMenu}>Projects</a>
+            <a href="#reviews" onClick={closeMenu}>Testimonials</a>
+            <a className="nav-cta" href={FIVERR_URL} target="_blank" rel="noreferrer" onClick={closeMenu}>
+              Let's talk <ArrowUpRight size={15} />
+            </a>
+          </div>
+        </nav>
+      </header>
 
-            <p style={{ color: '#9ca3af', fontSize: '1.1rem', lineHeight: 1.65, marginBottom: '2.5rem', maxWidth: '600px' }}>
-              Hi, I’m <strong>Zeeshan Aslam Sandhu</strong>. I engineer scalable web platforms, custom React UIs, robust PHP/Node backends, and flawless <strong>Stripe & PayPal</strong> integrations for global clients.
+      <main>
+        <section className="hero container" id="home">
+          <div className="hero-copy">
+            <div className="eyebrow"><span className="status-dot" /> Available for freelance projects</div>
+            <p className="hero-kicker">BUILDING DIGITAL PRODUCTS THAT WORK</p>
+            <h1>Full-stack development.<br /><span>Payments that just work.</span></h1>
+            <p className="hero-description">
+              I'm Zeeshan Aslam, a software developer focused on building reliable web applications,
+              custom backend systems and seamless Stripe & PayPal integrations for businesses worldwide.
             </p>
-
-            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              <a 
-                href="https://www.fiverr.com/users/zeshanaslam385" 
-                target="_blank" 
-                rel="noreferrer"
-                style={{ padding: '0.95rem 1.8rem', borderRadius: '12px', background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)', color: '#ffffff', fontWeight: 600, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.6rem', boxShadow: '0 6px 20px rgba(99, 102, 241, 0.4)' }}
-              >
-                <MessageSquare size={18} />
-                <span>Order on Fiverr</span>
+            <div className="hero-actions">
+              <a className="button button-primary" href={FIVERR_URL} target="_blank" rel="noreferrer">
+                Discuss your project <ArrowUpRight size={17} />
               </a>
-              <a 
-                href="#projects" 
-                style={{ padding: '0.95rem 1.8rem', borderRadius: '12px', backgroundColor: '#111827', color: '#e5e7eb', border: '1px solid rgba(255, 255, 255, 0.12)', fontWeight: 600, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-              >
-                <span>View Portfolio Work</span>
-                <ArrowRight size={16} />
+              <a className="button button-secondary" href="#projects">
+                Explore my work <ArrowRight size={17} />
               </a>
+            </div>
+            <div className="hero-trust">
+              <span><CheckCircle2 size={16} /> Clear communication</span>
+              <span><CheckCircle2 size={16} /> Practical solutions</span>
+              <span><CheckCircle2 size={16} /> Worldwide clients</span>
             </div>
           </div>
 
-          {/* Glowing Profile Badge Card */}
-          <div style={{ backgroundColor: 'rgba(17, 24, 39, 0.75)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '20px', padding: '2rem', backdropFilter: 'blur(10px)', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', paddingBottom: '1.5rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
-              <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'linear-gradient(135deg, #312e81 0%, #4338ca 100%)', border: '2px solid #6366f1', color: '#a5b4fc', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1.5rem', boxShadow: '0 0 20px rgba(99, 102, 241, 0.3)' }}>
-                ZA
-              </div>
+          <div className="hero-visual" aria-label="Developer profile summary">
+            <div className="visual-topline"><span className="window-dots"><i /><i /><i /></span><span>developer.profile</span><span className="visual-live">● ONLINE</span></div>
+            <div className="profile-card">
+              <div className="profile-avatar">ZA</div>
               <div>
-                <h3 style={{ margin: 0, color: '#ffffff', fontSize: '1.3rem', fontWeight: 800 }}>Zeeshan Aslam</h3>
-                <span style={{ color: '#818cf8', fontSize: '0.85rem' }}>@zeshanaslam385 (Fiverr Seller)</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: '#fbbf24', fontSize: '0.85rem', fontWeight: 700, marginTop: '0.3rem' }}>
-                  <Star size={14} fill="#fbbf24" />
-                  <span>5.0 (Top Rated Performance)</span>
-                </div>
+                <p className="profile-label">HELLO, I'M</p>
+                <h2>Zeeshan Aslam</h2>
+                <p className="profile-role">Full-Stack Developer <span>·</span> Payment Specialist</p>
               </div>
             </div>
+            <div className="code-window">
+              <div className="code-line"><span className="code-muted">const</span> developer = {"{"}</div>
+              <div className="code-line indent"><span className="code-key">focus</span>: <span className="code-string">"Full-stack web apps"</span>,</div>
+              <div className="code-line indent"><span className="code-key">payments</span>: [<span className="code-string">"Stripe"</span>, <span className="code-string">"PayPal"</span>],</div>
+              <div className="code-line indent"><span className="code-key">backend</span>: [<span className="code-string">"PHP"</span>, <span className="code-string">"Node.js"</span>],</div>
+              <div className="code-line indent"><span className="code-key">frontend</span>: [<span className="code-string">"React"</span>, <span className="code-string">"Next.js"</span>]</div>
+              <div className="code-line">{"};"}</div>
+              <div className="code-cursor">Building something useful<span>_</span></div>
+            </div>
+            <div className="floating-chip chip-payment"><CreditCard size={16} /> Payment integrations</div>
+            <div className="floating-chip chip-stack"><Code2 size={16} /> Modern web stack</div>
+          </div>
+        </section>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem', paddingTop: '1.5rem', fontSize: '0.9rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#9ca3af' }}>
-                <span>Qualification</span>
-                <span style={{ color: '#f3f4f6', fontWeight: 600 }}>BS Software Engineering</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#9ca3af' }}>
-                <span>Core Expertise</span>
-                <span style={{ color: '#a5b4fc', fontWeight: 600 }}>React, PHP, Stripe API</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#9ca3af' }}>
-                <span>On-Time Delivery</span>
-                <span style={{ color: '#34d399', fontWeight: 700 }}>100% Guaranteed</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#9ca3af' }}>
-                <span>Order Channel</span>
-                <span style={{ color: '#f3f4f6' }}>Fiverr Platform</span>
-              </div>
+        <section className="intro-strip">
+          <div className="container intro-strip-inner">
+            <p>TECHNOLOGY IS ONLY USEFUL WHEN IT SOLVES A REAL BUSINESS PROBLEM.</p>
+            <div className="strip-tags"><span>WEB APPS</span><span>PAYMENTS</span><span>BACKEND SYSTEMS</span></div>
+          </div>
+        </section>
+
+        <section className="section container" id="about">
+          <div className="section-heading">
+            <p className="section-kicker">A LITTLE ABOUT ME</p>
+            <h2>Turning complex requirements<br /><span>into dependable software.</span></h2>
+          </div>
+          <div className="about-grid">
+            <p className="about-lead">
+              I work across the frontend and backend to help businesses launch, improve and maintain
+              their digital products. My work combines clean interfaces, dependable APIs and payment
+              systems designed around real-world workflows.
+            </p>
+            <div className="about-note">
+              <span className="note-icon"><Zap size={19} /></span>
+              <div><strong>My approach</strong><p>Understand the requirement, build the right solution, and keep the experience clear for both users and businesses.</p></div>
             </div>
           </div>
+        </section>
 
-        </div>
-      </section>
-
-      {/* Tech Stack Grid */}
-      <section id="skills" style={{ backgroundColor: 'rgba(17, 24, 39, 0.5)', padding: '5rem 1.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
-        <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-            <h2 style={{ fontSize: '2.2rem', fontWeight: 800, color: '#ffffff', margin: 0 }}>Technical Stack & Capabilities</h2>
-            <p style={{ color: '#9ca3af', fontSize: '0.95rem', marginTop: '0.6rem' }}>Core technologies I use to build robust, production-ready solutions.</p>
+        <section className="section section-tinted" id="services">
+          <div className="container">
+            <div className="section-heading centered">
+              <p className="section-kicker">WHAT I CAN HELP WITH</p>
+              <h2>Development built around <span>your goals.</span></h2>
+              <p className="section-subtitle">From a focused integration to a complete web application, I can help move your project forward.</p>
+            </div>
+            <div className="service-grid">
+              {services.map((service, index) => {
+                const Icon = service.icon;
+                return <article className="service-card" key={service.title}>
+                  <div className="service-icon"><Icon size={22} /></div>
+                  <span className="service-number">0{index + 1}</span>
+                  <h3>{service.title}</h3>
+                  <p>{service.text}</p>
+                  <a href={FIVERR_URL} target="_blank" rel="noreferrer">Discuss this service <ArrowUpRight size={15} /></a>
+                </article>;
+              })}
+            </div>
           </div>
+        </section>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))', gap: '1.25rem' }}>
-            {SKILLS.map((skill, index) => {
-              const IconComp = skill.icon;
-              return (
-                <div key={index} style={{ backgroundColor: 'rgba(17, 24, 39, 0.8)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '16px', padding: '1.25rem', transition: 'all 0.3s ease' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', marginBottom: '0.75rem' }}>
-                    <div style={{ padding: '0.6rem', borderRadius: '10px', backgroundColor: 'rgba(99, 102, 241, 0.15)', color: '#818cf8' }}>
-                      <IconComp size={20} />
-                    </div>
-                    <div>
-                      <h4 style={{ margin: 0, fontSize: '0.95rem', color: '#f3f4f6', fontWeight: 700 }}>{skill.name}</h4>
-                      <span style={{ fontSize: '0.7rem', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{skill.category}</span>
-                    </div>
-                  </div>
-                  <p style={{ margin: 0, fontSize: '0.8rem', color: '#6b7280' }}>{skill.desc}</p>
-                </div>
-              );
+        <section className="section container" id="skills">
+          <div className="section-heading">
+            <p className="section-kicker">TOOLS OF THE TRADE</p>
+            <h2>Technical expertise, <span>practical results.</span></h2>
+            <p className="section-subtitle">A versatile stack for building, integrating and supporting modern applications.</p>
+          </div>
+          <div className="skills-grid">
+            {skills.map((skill) => {
+              const Icon = skill.icon;
+              return <article className="skill-card" key={skill.name}>
+                <div className="skill-icon"><Icon size={19} /></div>
+                <div><span className="skill-group">{skill.group}</span><h3>{skill.name}</h3><p>{skill.detail}</p></div>
+              </article>;
             })}
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Fiverr Reviews Interactive Slider Section */}
-      <section id="reviews" style={{ padding: '5rem 1.5rem', maxWidth: '1240px', margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', color: '#34d399', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.5rem' }}>
-            <CheckCircle size={16} />
-            <span>Real Feedback from Verified Fiverr Orders</span>
-          </div>
-          <h2 style={{ fontSize: '2.2rem', fontWeight: 800, color: '#ffffff', margin: 0 }}>Client Reviews & Testimonials</h2>
-        </div>
-
-        {/* Carousel Slider Card */}
-        <div style={{ position: 'relative', maxWidth: '800px', margin: '0 auto' }}>
-          <div style={{ backgroundColor: 'rgba(17, 24, 39, 0.9)', border: '1px solid rgba(99, 102, 241, 0.3)', borderRadius: '24px', padding: '3rem 2.5rem', position: 'relative', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
-            
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: '#1e1b4b', border: '2px solid #6366f1', color: '#818cf8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1.1rem' }}>
-                  {REVIEWS_DATA[currentReviewIndex].client.substring(0, 2).toUpperCase()}
-                </div>
-                <div>
-                  <h3 style={{ margin: 0, color: '#ffffff', fontSize: '1.15rem', fontWeight: 700 }}>
-                    {REVIEWS_DATA[currentReviewIndex].client} <span style={{ marginLeft: '0.3rem' }}>{REVIEWS_DATA[currentReviewIndex].flag}</span>
-                  </h3>
-                  <span style={{ fontSize: '0.8rem', color: '#9ca3af' }}>
-                    {REVIEWS_DATA[currentReviewIndex].country} • {REVIEWS_DATA[currentReviewIndex].date}
-                  </span>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#fbbf24', fontSize: '0.9rem', fontWeight: 'bold', backgroundColor: 'rgba(251, 191, 36, 0.12)', padding: '0.4rem 0.8rem', borderRadius: '9999px', border: '1px solid rgba(251, 191, 36, 0.25)' }}>
-                <Star size={15} fill="#fbbf24" />
-                <span>{REVIEWS_DATA[currentReviewIndex].rating}.0</span>
-              </div>
+        <section className="section section-tinted" id="projects">
+          <div className="container">
+            <div className="section-heading project-heading">
+              <div><p className="section-kicker">SELECTED WORK</p><h2>Projects & <span>implementations.</span></h2></div>
+              <p className="section-subtitle">A selection of the types of products and systems I work on.</p>
             </div>
+            <div className="project-grid">
+              {projects.map((project) => {
+                const Icon = project.icon;
+                return <article className={`project-card accent-${project.accent}`} key={project.number}>
+                  <div className="project-card-top"><span className="project-number">{project.number} / CASE STUDY</span><span className="project-icon"><Icon size={23} /></span></div>
+                  <p className="project-category">{project.category}</p>
+                  <h3>{project.title}</h3>
+                  <p className="project-description">{project.description}</p>
+                  <div className="tag-list">{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div>
+                </article>;
+              })}
+            </div>
+            <p className="project-disclaimer">Project descriptions are summaries of selected development work. Further details can be shared where permitted.</p>
+          </div>
+        </section>
 
-            <p style={{ color: '#e5e7eb', fontSize: '1.15rem', lineHeight: 1.7, fontStyle: 'italic', marginBottom: '2rem' }}>
-              "{REVIEWS_DATA[currentReviewIndex].review}"
-            </p>
-
-            <div style={{ paddingTop: '1.25rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ color: '#818cf8', fontSize: '0.85rem', fontWeight: 600, fontFamily: 'monospace' }}>
-                Gig: {REVIEWS_DATA[currentReviewIndex].gigTitle}
-              </span>
-              <span style={{ backgroundColor: 'rgba(16, 185, 129, 0.12)', color: '#34d399', fontSize: '0.75rem', padding: '0.25rem 0.61rem', borderRadius: '6px', border: '1px solid rgba(16, 185, 129, 0.25)', fontWeight: 600 }}>
-                Fiverr Verified
-              </span>
+        <section className="section container" id="reviews">
+          <div className="section-heading centered">
+            <p className="section-kicker">CLIENT FEEDBACK</p>
+            <h2>Good work. <span>Good relationships.</span></h2>
+            <p className="section-subtitle">A few words shared by clients after working together.</p>
+          </div>
+          <div className="testimonial-wrap">
+            <div className="testimonial-card">
+              <div className="testimonial-top">
+                <div className="client-avatar">{activeReview.client.slice(0, 1).toUpperCase()}</div>
+                <div className="client-info"><strong>{activeReview.client} <span>{activeReview.flag}</span></strong><small>{activeReview.country} · {activeReview.date}</small></div>
+                <div className="review-rating"><Star size={15} fill="currentColor" /> 5.0</div>
+              </div>
+              <div className="quote-mark">“</div>
+              <blockquote>{activeReview.text}</blockquote>
+              <div className="testimonial-bottom"><span>{activeReview.project}</span><span className="review-source"><CheckCircle2 size={14} /> Fiverr review</span></div>
+            </div>
+            <div className="testimonial-controls">
+              <button onClick={() => changeReview(-1)} aria-label="Previous review"><ChevronLeft size={19} /></button>
+              <div className="review-dots">{reviews.map((review, index) => <button key={review.client} className={index === reviewIndex ? "active" : ""} onClick={() => setReviewIndex(index)} aria-label={`Show review ${index + 1}`} />)}</div>
+              <button onClick={() => changeReview(1)} aria-label="Next review"><ChevronRight size={19} /></button>
             </div>
           </div>
+        </section>
 
-          {/* Slider Arrow Controls */}
-          <button 
-            onClick={prevReview}
-            style={{ position: 'absolute', left: '-25px', top: '50%', transform: 'translateY(-50%)', width: '50px', height: '50px', borderRadius: '50%', backgroundColor: '#111827', border: '1px solid rgba(255, 255, 255, 0.15)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 10px 20px rgba(0,0,0,0.4)' }}
-          >
-            <ChevronLeft size={22} />
-          </button>
-          
-          <button 
-            onClick={nextReview}
-            style={{ position: 'absolute', right: '-25px', top: '50%', transform: 'translateY(-50%)', width: '50px', height: '50px', borderRadius: '50%', backgroundColor: '#111827', border: '1px solid rgba(255, 255, 255, 0.15)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 10px 20px rgba(0,0,0,0.4)' }}
-          >
-            <ChevronRight size={22} />
-          </button>
-
-          {/* Slider Dots */}
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginTop: '1.5rem' }}>
-            {REVIEWS_DATA.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => { setIsAutoPlaying(false); setCurrentReviewIndex(idx); }}
-                style={{ width: idx === currentReviewIndex ? '28px' : '9px', height: '9px', borderRadius: '9999px', backgroundColor: idx === currentReviewIndex ? '#6366f1' : '#374151', border: 'none', cursor: 'pointer', transition: 'all 0.3s ease' }}
-              />
-            ))}
+        <section className="contact-section">
+          <div className="container contact-inner">
+            <div><p className="section-kicker">HAVE A PROJECT IN MIND?</p><h2>Let's build something<br /><span>that makes a difference.</span></h2><p>Tell me what you're working on. I'll be happy to discuss the requirements and a practical way forward.</p></div>
+            <a className="button button-light" href={FIVERR_URL} target="_blank" rel="noreferrer">Start a conversation <ArrowUpRight size={17} /></a>
           </div>
+        </section>
+      </main>
+
+      <footer className="footer">
+        <div className="container footer-inner">
+          <a className="brand footer-brand" href="#home"><span className="brand-mark">Z<span>.</span></span><span className="brand-copy"><strong>Zeeshan Aslam</strong><small>Full-stack developer</small></span></a>
+          <p>Building useful digital experiences with code.</p>
+          <a className="footer-link" href={FIVERR_URL} target="_blank" rel="noreferrer">Fiverr profile <ExternalLink size={14} /></a>
+          <small className="copyright">© {new Date().getFullYear()} Zeeshan Aslam. All rights reserved.</small>
         </div>
-      </section>
-
-      {/* Projects Showcase */}
-      <section id="projects" style={{ backgroundColor: 'rgba(17, 24, 39, 0.5)', padding: '5rem 1.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
-        <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-            <h2 style={{ fontSize: '2.2rem', fontWeight: 800, color: '#ffffff', margin: 0 }}>Featured Projects</h2>
-            <p style={{ color: '#9ca3af', fontSize: '0.95rem', marginTop: '0.6rem' }}>Selected custom web builds & backend implementations.</p>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.75rem' }}>
-            {PROJECTS.map((proj) => (
-              <div key={proj.id} style={{ backgroundColor: 'rgba(17, 24, 39, 0.85)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '20px', padding: '1.75rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                <div>
-                  <span style={{ fontSize: '0.75rem', color: '#818cf8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{proj.category}</span>
-                  <h3 style={{ fontSize: '1.25rem', color: '#ffffff', margin: '0.5rem 0 0.85rem 0', fontWeight: 700 }}>{proj.title}</h3>
-                  <p style={{ color: '#9ca3af', fontSize: '0.9rem', lineHeight: 1.6, margin: 0 }}>{proj.description}</p>
-                </div>
-
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '1.5rem' }}>
-                  {proj.tags.map((t, i) => (
-                    <span key={i} style={{ backgroundColor: '#030712', color: '#d1d5db', fontSize: '0.75rem', padding: '0.3rem 0.7rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer style={{ padding: '3.5rem 1.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)', textAlign: 'center', color: '#6b7280', fontSize: '0.9rem' }}>
-        <p style={{ color: '#9ca3af', marginBottom: '1.25rem' }}>Ready to start your project? Let’s discuss requirements on Fiverr.</p>
-        <a 
-          href="https://www.fiverr.com/users/zeshanaslam385" 
-          target="_blank" 
-          rel="noreferrer"
-          style={{ padding: '0.8rem 1.5rem', borderRadius: '12px', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color: '#ffffff', fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', marginBottom: '2rem', boxShadow: '0 4px 14px rgba(16, 185, 129, 0.3)' }}
-        >
-          <span>Contact Me on Fiverr (@zeshanaslam385)</span>
-          <ChevronRight size={18} />
-        </a>
-        <div>© 2026 Zeeshan Aslam Sandhu. All Rights Reserved.</div>
       </footer>
-
     </div>
   );
 }
